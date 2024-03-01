@@ -1,0 +1,561 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.itkim.inspector</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>SecInspector</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="kim140@foxmail.com" url="https://github.com/KimJun1010">KimJun</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+
+    <h1>SecInspector plugin</h1>
+    <b>Java静态代码安全审计工具 SecInspector</b>
+    <br/>
+
+    <b>A Java static code inspector</b><br/>
+    <br/>
+    本插件侧重于在编码过程中发现项目潜在的安全风险，并提供一键修复能力。<br/>
+    This plugin focus on the security risks and provides one-click fix capability.<br/>
+    <br/>
+    本插件利用IDEA原生Inspection机制检查活跃文件，检查速度快，占用资源少。<br/>
+    It uses the IDEA native inspection mechanism to check the active file, which is faster and takes up less resources.<br/>
+    <br/>
+    插件提供的规则名称均以"<b>SecInspector</b>"开头。<br/>
+    It provides a set of inspection rules, the name of all rules starts with "<b>SecInspector</b>".<br/>
+    <br/>
+    <hr>
+    Contact: kim140@foxmail.com <br/>
+    Github: https://github.com/KimJun1010
+    <br/>
+    <br/>
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="ERROR"
+                bundle="InspectionBundle" key="fastjson.auto.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.FastjsonAutoType"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="fastjson.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.FastjsonUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="xml.decoder.unserialize.name"
+                implementationClass="com.itkim.inspector.rule.rce.XMLDecoderUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="scriptEngine.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.ScriptEngineRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="nashornScriptEngine.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.NashornScriptEngineRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="compilable.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.CompilableRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="snakeYaml.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.SnakeYamlUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jYaml.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.JYamlUnserialize"
+        />
+
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jsonIO.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.JsonIOUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="yamlBeans.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.YamlBeansUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="hessian.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.HessianUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="castor.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.CastorUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="burlap.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.BurlapUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="kryo.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.KryoUnserialize"
+        />
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="xStream.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.XStreamUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="objectInputStream.unserialize.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.ObjectInputStreamUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="runtime.rce.type.name"
+                implementationClass="com.itkim.inspector.rule.rce.RuntimeRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="mvel.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.MVELRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="groovy.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.GroovyRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="ognl.injection.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.OGNLInjectionRCE"
+        />
+
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jexl.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.JEXLRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="spel.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.SPELRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="el.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.ELRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="expression.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.ExpressionRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="bsh.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.BSHRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="xslt.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.XSLTRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jschOS.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.JSchOSRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jython.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.JythonRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="rhino.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.RhinoRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="classLoader.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.ClassLoaderRCE"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="validation.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.ValidationSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="velocity.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.VelocitySSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="pebble.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.PebbleSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jinjava.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.JinjavaSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="freemarker.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.FreemarkeraSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="thymeleaf.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.ThymeleafSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="beetl.ssti.name"
+                implementationClass="com.itkim.inspector.rule.ssti.BeetlSSTI"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="system.exit.name"
+                implementationClass="com.itkim.inspector.rule.dos.SystemDOS"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="pattern.matches.name"
+                implementationClass="com.itkim.inspector.rule.dos.PatternDOS"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="file.read.name"
+                implementationClass="com.itkim.inspector.rule.fileRead.FileRead"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="io.files.write.name"
+                implementationClass="com.itkim.inspector.rule.fileWrite.IOFiles"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="commonIO.file.write.name"
+                implementationClass="com.itkim.inspector.rule.fileWrite.CommonsIO"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jdbc.unserialize.name"
+                implementationClass="com.itkim.inspector.rule.jdbc.JDBCUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="javax.redirect.name"
+                implementationClass="com.itkim.inspector.rule.redirect.JavaxRedirect"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jakarta.redirect.name"
+                implementationClass="com.itkim.inspector.rule.redirect.JakartaRedirect"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="reflect.name"
+                implementationClass="com.itkim.inspector.rule.reflect.Reflect"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="placeholder.string.sqli.name"
+                implementationClass="com.itkim.inspector.rule.sqli.PlaceholderStringSQLi"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="polyadic.expression.sqli.name"
+                implementationClass="com.itkim.inspector.rule.sqli.PolyadicExpressionSQLi"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="mybatis.annotation.sqli.name"
+                implementationClass="com.itkim.inspector.rule.sqli.MybatisAnnotationSQLi"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jackson.databind.default.typing.name"
+                implementationClass="com.itkim.inspector.rule.rce.JacksonDatabindDefaultTyping"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="netty.response.splitting.name"
+                implementationClass="com.itkim.inspector.rule.dos.NettyResponseSplitting"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="open.saml2.ignore.comment.name"
+                implementationClass="com.itkim.inspector.rule.openSAML2.OpenSAML2IgnoreComment"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="outdated.encryption.inspector.name"
+                implementationClass="com.itkim.inspector.rule.other.OutdatedEncryptionInspector"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="predictable.seed.name"
+                implementationClass="com.itkim.inspector.rule.other.PredictableSeed"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="replace.pseudorandom.generator.name"
+                implementationClass="com.itkim.inspector.rule.other.ReplacePseudorandomGenerator"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="spring.security.debug.enabled.name"
+                implementationClass="com.itkim.inspector.rule.other.SpringSecurityDebugEnabled"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="spring.session.fix.protection.name"
+                implementationClass="com.itkim.inspector.rule.other.SpringSessionFixProtection"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="weak.hash.inspector.name"
+                implementationClass="com.itkim.inspector.rule.other.WeakHashInspector"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="mybatis.xml.sqli.name"
+                implementationClass="com.itkim.inspector.rule.sqli.MybatisXmlSQLi"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="ldap.unserialize.name"
+                implementationClass="com.itkim.inspector.rule.jndi.LDAPUnserialize"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jndi.injection.name"
+                implementationClass="com.itkim.inspector.rule.jndi.JNDIInjection"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="xxe.inspector.name"
+                implementationClass="com.itkim.inspector.rule.xxe.XXEInspector"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="apache.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.ApacheSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="google.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.GoogleIOSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="java.url.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.JavaURLSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="jsonp.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.JsoupSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="okhttp.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.OkhttpSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="spring.ssrf.name"
+                implementationClass="com.itkim.inspector.rule.ssrf.SpringSSRF"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="board.cors.allow.origin.name"
+                implementationClass="com.itkim.inspector.rule.other.BroadCORSAllowOrigin"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="hardcoded.credentials.name"
+                implementationClass="com.itkim.inspector.rule.other.HardcodedCredentials"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="hardcoded.ip.name"
+                implementationClass="com.itkim.inspector.rule.other.HardcodedIp"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="public.controller.on.spring.name"
+                implementationClass="com.itkim.inspector.rule.other.PublicControllerOnSpring"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="base.sqli.name"
+                implementationClass="com.itkim.inspector.rule.sqli.SQLi"
+        />
+    </extensions>
+</idea-plugin>
