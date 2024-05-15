@@ -6,11 +6,8 @@ import com.intellij.psi.*;
 import com.itkim.inspector.BaseLocalInspectionTool;
 import com.itkim.inspector.utils.InspectionBundle;
 import com.itkim.inspector.utils.SecExpressionUtils;
-import com.siyeh.ig.psiutils.MethodCallUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.regex.Pattern;
 
 /**
  * 1042
@@ -83,7 +80,10 @@ public class CommonsIO extends BaseLocalInspectionTool {
                         || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.IOUtils", "copy")
                         || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.RandomAccessFileMode", "create")
 
-                        ) {
+                        //0.0.2 add
+                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.fileupload", "write")
+
+                ) {
                     holder.registerProblem(
                             expression,
                             MESSAGE,

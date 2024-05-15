@@ -35,16 +35,16 @@ import java.util.stream.Collectors;
 
 /**
  * 1049: Mybatis注解SQL注入漏洞
- *
+ * <p>
  * Mybatis 注解SQL语句，使用${}方式插入的变量可能存在SQL注入的风险
- *
+ * <p>
  * Mybatis可书写SQL语句的注解，接受的是字符串数组。如下均为正确的写法
- *
+ * <p>
  * (1) @Select("select * from table")
  * (2) @Select("select * " + " from table")
  * (3) @Select({"select * from table"})
  * (4) @Select({"select", "*", "from", "table"})
- *
+ * <p>
  * 当需要使用XML脚本时，需要将SQL语句插入<script></script>标签中
  * (*) @Select({"<script>", "select * from table <if test=\"id != null\">where id = #{id}</if>", "</script>"})
  */
@@ -68,11 +68,13 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
             @Override
             public void visitAnnotation(PsiAnnotation annotation) {
                 if (Boolean.FALSE.equals(checkedAnnotations.contains(annotation.getQualifiedName()))) {
-                    return ;
+                    return;
                 }
                 PsiAnnotationParameterList psiAnnotationParameterList = annotation.getParameterList();
                 PsiNameValuePair[] psiNameValuePairs = psiAnnotationParameterList.getAttributes();
-                if (psiNameValuePairs.length != 1) { return ; }
+                if (psiNameValuePairs.length != 1) {
+                    return;
+                }
                 PsiNameValuePair psiNameValuePair = psiNameValuePairs[0];
 
                 String content;
@@ -80,14 +82,14 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
                 if (content == null) {
                     PsiElement innerElem = psiNameValuePair.getValue();
                     if (innerElem == null) {
-                        return ;
+                        return;
                     }
 
                     if (innerElem instanceof PsiPolyadicExpression) {   // 见注释 (2)
-                        content = SecExpressionUtils.getText((PsiPolyadicExpression)innerElem, true);
+                        content = SecExpressionUtils.getText((PsiPolyadicExpression) innerElem, true);
                     } else if (innerElem instanceof PsiArrayInitializerMemberValue) {   // 见注释 (3) / (4)
-                        content = Arrays.stream(((PsiArrayInitializerMemberValueImpl)innerElem).getInitializers())
-                                .map(elem -> SecExpressionUtils.getText((PsiExpression)elem, true))
+                        content = Arrays.stream(((PsiArrayInitializerMemberValueImpl) innerElem).getInitializers())
+                                .map(elem -> SecExpressionUtils.getText((PsiExpression) elem, true))
                                 .collect(Collectors.joining());
                     }
                 }
@@ -106,15 +108,20 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
 
         Matcher m = SQLiUtil.dollarVarPattern.matcher(content);
         int offset = 0;
+        int count = 0;
         List<List<String>> fragments = new ArrayList<>();
-        while(m.find(offset)) {
+        while (m.find(offset) && count++ < 9999){
             String prefix = content.substring(0, m.start());
-            String var    = m.group(1);
+            String var = m.group(1);
             String suffix = content.substring(m.end());
             if (ignorePosition(prefix, var, suffix)) {
                 continue;
             }
-            fragments.add(new ArrayList<String>(){{ add(prefix); add(var); add(suffix); }});
+            fragments.add(new ArrayList<String>() {{
+                add(prefix);
+                add(var);
+                add(suffix);
+            }});
 
             offset = m.end();
         }
@@ -129,7 +136,8 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
     public static class MybatisAnnotationSQLiQuickFix implements LocalQuickFix {
 
         @Override
-        public @Nls(capitalization = Nls.Capitalization.Sentence) @NotNull String getFamilyName() {
+        public @Nls(capitalization = Nls.Capitalization.Sentence)
+        @NotNull String getFamilyName() {
             return QUICK_FIX_NAME;
         }
 
@@ -141,7 +149,7 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
 
             // 目前仅对单一字符串进行自动替换
             if (problemElem instanceof PsiLiteralExpression) {
-                String content = SecExpressionUtils.getLiteralInnerText((PsiLiteralExpression)problemElem);
+                String content = SecExpressionUtils.getLiteralInnerText((PsiLiteralExpression) problemElem);
                 if (content != null) {
                     String newContent = replaceDollarWithHashtagOnString(content, 0);
                     PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
@@ -154,7 +162,7 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
             if (Boolean.FALSE.equals(isFix)) {
                 PsiMethod method = SecExpressionUtils.getParentOfMethod(problemElem);
                 if (method == null) {
-                    return ;
+                    return;
                 }
                 PsiElement firstChild = method.getFirstChild();
 
@@ -167,7 +175,7 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
 
         private String replaceDollarWithHashtagOnString(@NotNull String content, int offset) {
             Matcher m = SQLiUtil.dollarVarPattern.matcher(content);
-            if(m.find(offset)) {
+            if (m.find(offset)) {
                 String prefix = content.substring(0, m.start());
                 String suffix = content.substring(m.end());
                 String var = m.group(1);
@@ -185,7 +193,7 @@ public class MybatisAnnotationSQLi extends BaseLocalInspectionTool {
                         content = replaceDollarWithHashtagOnString(prefix + concat + suffix, prefix.length() + concat.length() - 1);
                     } else {
                         if (Str.rtrim(prefix).endsWith("'") || Str.rtrim(prefix).endsWith("\"")) {
-                            prefix = Str.rtrim(prefix).substring(0, prefix.length()-1);
+                            prefix = Str.rtrim(prefix).substring(0, prefix.length() - 1);
                             suffix = Str.ltrim(suffix).substring(1);
                         }
                         content = replaceDollarWithHashtagOnString(prefix + inner.replace('$', '#') + suffix, prefix.length() + inner.length());

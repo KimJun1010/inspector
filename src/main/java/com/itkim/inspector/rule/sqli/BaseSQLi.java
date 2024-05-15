@@ -51,8 +51,9 @@ public abstract class BaseSQLi extends BaseLocalInspectionTool {
     protected boolean hasEvalAdditive(String content, Pattern pattern) {
         Matcher m = pattern.matcher(content);
         int offset = 0;
+        int count = 0;
         List<String> prefixes = new ArrayList<>();
-        while(m.find(offset)) {
+        while(m.find(offset) && count++ < 9999) {
             prefixes.add(content.substring(0, m.start()));
             offset = m.end();
         }

@@ -40,7 +40,7 @@ import java.util.regex.Matcher;
 
 /**
  * 1004: Mybatis XML SQL注入漏洞
- *
+ * <p>
  * Mybatis XML Mapper SQL语句，使用${}方式插入的变量可能存在SQL注入的风险
  */
 public class MybatisXmlSQLi extends BaseLocalInspectionTool {
@@ -59,24 +59,31 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
             @Override
             public void visitXmlText(XmlText text) {
                 if (text.getParentTag() != null &&
-                    ("sql".equals(text.getParentTag().getName()) || "mapper".equals(text.getParentTag().getName()) )
+                        ("sql".equals(text.getParentTag().getName()) || "mapper".equals(text.getParentTag().getName()))
                 ) {
-                    return ;
+                    return;
                 }
 
                 XmlDocument document = XmlUtil.getContainingFile(text).getDocument();
-                if ( document == null ) { return ; }
+                if (document == null) {
+                    return;
+                }
                 String dtd = XmlUtil.getDtdUri(document);
-                if (dtd == null || !(dtd.contains("mybatis.org") && dtd.contains("mapper.dtd"))) { return ; }
+                if (dtd == null || !(dtd.contains("mybatis.org") && dtd.contains("mapper.dtd"))) {
+                    return;
+                }
 
                 String _text = text.getValue();
-                if (_text.isEmpty() || !_text.contains("${")) { return ; }
+                if (_text.isEmpty() || !_text.contains("${")) {
+                    return;
+                }
 
                 Matcher m = SQLiUtil.dollarVarPattern.matcher(_text);
                 int offset = 0;
-                while (m.find(offset)) {
+                int count = 0;
+                while (m.find(offset) && count++ < 9999) {
                     String prefix = _text.substring(0, m.start());
-                    String var    = m.group(1);
+                    String var = m.group(1);
                     String suffix = _text.substring(m.end());
                     if (!ignorePosition(prefix, var, suffix) && SQLiUtil.hasVulOnSQLJoinStr(prefix, var, suffix)) {
                         holder.registerProblem(text, MESSAGE, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, mybatisXmlSQLiQuickFix);
@@ -95,23 +102,25 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
     public static class MybatisXmlSQLiQuickFix implements LocalQuickFix {
 
         @Override
-        public @Nls(capitalization = Nls.Capitalization.Sentence) @NotNull String getFamilyName() {
+        public @Nls(capitalization = Nls.Capitalization.Sentence)
+        @NotNull String getFamilyName() {
             return QUICK_FIX_NAME;
         }
 
         @Override
         public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
             // elem must be XmlText type
-            fixXmlText((XmlText)descriptor.getPsiElement(), 0);
+            fixXmlText((XmlText) descriptor.getPsiElement(), 0);
         }
 
         private void fixXmlText(XmlText xmlText, int offset) {
             String v = xmlText.getValue();
             Matcher m = SQLiUtil.dollarVarPattern.matcher(v);
-            while(m.find(offset)) {
+            int count = 0;
+            while (m.find(offset) && count++ < 9999) {
                 String prefix = v.substring(0, m.start());
                 String suffix = v.substring(m.end());
-                String var    = m.group(1);
+                String var = m.group(1);
 
                 if (ignorePosition(prefix, var, suffix) || !SQLiUtil.hasVulOnSQLJoinStr(prefix, var, suffix)) {
                     offset = m.end();
@@ -124,16 +133,16 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
                         prefix = Str.rtrim(prefix);
                         suffix = Str.ltrim(suffix);
 
-                        prefix = prefix.substring(0, prefix.length()-1);
+                        prefix = prefix.substring(0, prefix.length() - 1);
                         suffix = suffix.substring(1);
                     }
-                    XmlTag parent  = xmlText.getParentTag();
+                    XmlTag parent = xmlText.getParentTag();
                     if (parent != null) {
                         // 0. 保证文本结构，提取上文尾部换行符
                         PsiElement lastElem = xmlText.getLastChild();
                         PsiWhiteSpace lastWhiteSpace;
                         if (lastElem instanceof PsiWhiteSpace) {
-                            lastWhiteSpace = (PsiWhiteSpace)lastElem;
+                            lastWhiteSpace = (PsiWhiteSpace) lastElem;
                         } else {
                             lastWhiteSpace = (PsiWhiteSpace) PsiParserFacade.SERVICE.getInstance(xmlText.getProject()).createWhiteSpaceFromText("\n");
                         }
@@ -160,7 +169,7 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
 
                         XmlTagChild[] xmlTagChildren = parent.getValue().getChildren();
                         if (xmlTagChildren[xmlTagChildren.length - 1] instanceof XmlText) {
-                            fixXmlText((XmlText)xmlTagChildren[xmlTagChildren.length - 1], 0);
+                            fixXmlText((XmlText) xmlTagChildren[xmlTagChildren.length - 1], 0);
                         }
                     } else {
                         fixXmlText(xmlText, m.end());
@@ -176,7 +185,7 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
                     fixXmlText(xmlText, prefix.length() + concat.length());
                 } else {
                     if (prefix.trim().endsWith("'") || prefix.trim().endsWith("\"")) {
-                        prefix = Str.rtrim(prefix).substring(0, prefix.length()-1);
+                        prefix = Str.rtrim(prefix).substring(0, prefix.length() - 1);
                         suffix = Str.ltrim(suffix).substring(1);
                     }
                     xmlText.setValue(prefix + "#{" + m.group(1) + "}" + suffix);
@@ -193,7 +202,7 @@ public class MybatisXmlSQLi extends BaseLocalInspectionTool {
                     String.format("%s#{%sItem}%s", whiteSpace.getText(), varName, whiteSpace.getText()),
                     false);
             foreach.setAttribute("collection", varName);
-            foreach.setAttribute("item", varName+"Item");
+            foreach.setAttribute("item", varName + "Item");
             foreach.setAttribute("open", "(");
             foreach.setAttribute("separator", ",");
             foreach.setAttribute("close", ")");

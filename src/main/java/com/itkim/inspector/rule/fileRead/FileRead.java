@@ -15,6 +15,14 @@ import org.jetbrains.annotations.NotNull;
  * 1040
  * java/io/FileInputStream <init> * 1 false # 文件读取的sink # FILE_READ
  * java/lang/Class getResourceAsStream (Ljava/lang/String;)Ljava/io/InputStream; 1 false # 文件读取 # FILE_READ
+ * <p>
+ * org.apache.commons.io.FileUtils#readFileToByteArray
+ * org.apache.commons.io.FileUtils#readFileToString(java.io.File)
+ * org.apache.commons.io.FileUtils#readFileToString(java.io.File, java.nio.charset.Charset)
+ * org.apache.commons.io.FileUtils#readFileToString(java.io.File, java.lang.String)
+ * org.apache.commons.io.FileUtils#readLines(java.io.File)
+ * org.apache.commons.io.FileUtils#readLines(java.io.File, java.nio.charset.Charset)
+ * org.apache.commons.io.FileUtils#readLines(java.io.File, java.lang.String)
  */
 public class FileRead extends BaseLocalInspectionTool {
     public static final String MESSAGE = InspectionBundle.message("file.read.type.msg");
@@ -25,7 +33,10 @@ public class FileRead extends BaseLocalInspectionTool {
         return new JavaElementVisitor() {
             @Override
             public void visitMethodCallExpression(PsiMethodCallExpression expression) {
-                if (SecExpressionUtils.hasFullQualifiedName(expression, "java.lang.Class", "getResourceAsStream")) {
+                if (SecExpressionUtils.hasFullQualifiedName(expression, "java.lang.Class", "getResourceAsStream")
+                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.FileUtils", "readFileToByteArray")
+                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.FileUtils", "readFileToString")
+                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.FileUtils", "readLines")) {
                     holder.registerProblem(
                             expression,
                             MESSAGE,
