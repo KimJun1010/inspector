@@ -81,7 +81,7 @@ public class CommonsIO extends BaseLocalInspectionTool {
                         || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.io.RandomAccessFileMode", "create")
 
                         //0.0.2 add
-                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.fileupload", "write")
+//                        || SecExpressionUtils.hasFullQualifiedName(expression, "org.apache.commons.fileupload", "write")
 
                 ) {
                     holder.registerProblem(

@@ -454,7 +454,7 @@
         />
 
         <localInspection
-                language="JAVA" groupPath="Java"
+                language="XML" groupPath="Java"
                 groupName="Inspector" enabledByDefault="true" level="WARNING"
                 bundle="InspectionBundle" key="mybatis.xml.sqli.name"
                 implementationClass="com.itkim.inspector.rule.sqli.MybatisXmlSQLi"
@@ -556,6 +556,20 @@
                 groupName="Inspector" enabledByDefault="true" level="WARNING"
                 bundle="InspectionBundle" key="base.sqli.name"
                 implementationClass="com.itkim.inspector.rule.sqli.SQLi"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="commons.file.write.name"
+                implementationClass="com.itkim.inspector.rule.fileWrite.Commons"
+        />
+
+        <localInspection
+                language="JAVA" groupPath="Java"
+                groupName="Inspector" enabledByDefault="true" level="WARNING"
+                bundle="InspectionBundle" key="qlexpress.rce.name"
+                implementationClass="com.itkim.inspector.rule.rce.QLExpressRCE"
         />
     </extensions>
 </idea-plugin>
